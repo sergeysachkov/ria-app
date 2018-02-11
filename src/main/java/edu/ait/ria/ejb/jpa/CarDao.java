@@ -37,5 +37,11 @@ public class CarDao {
         return listPersons;
     }
 
+    public List<Car> getCarsByModel(String model) {
+        List<Car> listPersons = em.createQuery(
+                "SELECT p FROM Car p where p.model = :id").setParameter("id", model).getResultList();
+        return listPersons;
+    }
+
 
 }

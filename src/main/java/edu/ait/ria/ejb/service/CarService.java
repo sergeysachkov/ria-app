@@ -30,6 +30,13 @@ public class CarService {
         return carDao.getCars();
     }
 
+    @GET
+    @Path("/models/{model}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public List<Car> getCarsByModel(@PathParam("model") String model) {
+        return carDao.getCarsByModel(model);
+    }
+
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
