@@ -15,7 +15,7 @@ public class Car {
     @OneToOne(optional=false)
     @JoinColumn(name = "id")
     private Engine engine;
-    private short doors;
+    private int doors;
 
     public long getId() {
         return id;
@@ -57,11 +57,11 @@ public class Car {
         this.engine = engine;
     }
 
-    public short getDoors() {
+    public int getDoors() {
         return doors;
     }
 
-    public void setDoors(short doors) {
+    public void setDoors(int doors) {
         this.doors = doors;
     }
 

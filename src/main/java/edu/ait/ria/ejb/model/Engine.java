@@ -13,7 +13,7 @@ public class Engine {
     private String size;
     private String fuel;
     private String transmission;
-    private short cylinders;
+    private int cylinders;
 
     public long getId() {
         return id;
@@ -47,11 +47,11 @@ public class Engine {
         this.transmission = transmission;
     }
 
-    public short getCylinders() {
+    public int getCylinders() {
         return cylinders;
     }
 
-    public void setCylinders(short cylinders) {
+    public void setCylinders(int cylinders) {
         this.cylinders = cylinders;
     }
 

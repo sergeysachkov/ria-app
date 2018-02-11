@@ -8,6 +8,7 @@ import javax.ejb.TransactionAttribute;
 import javax.ejb.TransactionAttributeType;
 import javax.persistence.EntityManager;
 import javax.persistence.PersistenceContext;
+import java.util.ArrayList;
 import java.util.List;
 
 @Stateless
@@ -38,9 +39,36 @@ public class CarDao {
     }
 
     public List<Car> getCarsByModel(String field, String value) {
-        List<Car> listPersons = em.createQuery(
-                "SELECT p FROM Car p where p." + field +" = :" + field).setParameter(field, value).getResultList();
-        return listPersons;
+        try {
+            String param;
+            if(field.contains(".")){
+                param = field.substring(0, field.indexOf("."));
+            }else {
+                param = field;
+            }
+            List<Car> listPersons;
+            if(!isStringInteger(value)) {
+                listPersons = em.createQuery(
+                        "SELECT p FROM Car p where p." + field + " = :" + param).setParameter(param, value).getResultList();
+            }else {
+                listPersons = em.createQuery(
+                        "SELECT p FROM Car p where p." + field + " = :" + param).setParameter(param, Integer.parseInt(value)).getResultList();
+            }
+            return listPersons;
+        }catch (Exception e){
+            //todo log an error
+            return new ArrayList<Car>();
+        }
+
+    }
+
+    private boolean isStringInteger(String number ){
+        try{
+            Integer.parseInt(number);
+        }catch(Exception e ){
+            return false;
+        }
+        return true;
     }
 
 
