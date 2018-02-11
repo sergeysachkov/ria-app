@@ -1,0 +1,14 @@
+{
+  "id": 1,
+  "model": "Toyota",
+  "year": "2018",
+  "body": "SUV",
+  "engine": {
+    "id": 1,
+    "size": "1.8",
+    "fuel": "Petrol",
+    "transmission": "Manual",
+    "cylinders": 4
+  },
+  "doors": 5
+}
