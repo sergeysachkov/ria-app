@@ -31,10 +31,10 @@ public class CarService {
     }
 
     @GET
-    @Path("/models/{model}")
+    @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Car> getCarsByModel(@PathParam("model") String model) {
-        return carDao.getCarsByModel(model);
+    public List<Car> getCarsByModel(@QueryParam("field") String field, @QueryParam("value") String value) {
+        return carDao.getCarsByModel(field, value);
     }
 
     @POST

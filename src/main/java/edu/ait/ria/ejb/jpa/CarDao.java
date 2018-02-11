@@ -37,9 +37,9 @@ public class CarDao {
         return listPersons;
     }
 
-    public List<Car> getCarsByModel(String model) {
+    public List<Car> getCarsByModel(String field, String value) {
         List<Car> listPersons = em.createQuery(
-                "SELECT p FROM Car p where p.model = :id").setParameter("id", model).getResultList();
+                "SELECT p FROM Car p where p." + field +" = :" + field).setParameter(field, value).getResultList();
         return listPersons;
     }
 
