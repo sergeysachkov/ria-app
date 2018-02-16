@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Cars</title>
+    <link rel="stylesheet" href="jquery-ui.css">
+    <link rel="stylesheet" href="bootstrap.min.css">
+    <link rel="stylesheet" href="bootstrap-table.css">
+    <script src="jquery-3.3.1.min.js"></script>
+    <script src="jquery-ui.js"></script>
+    <script src="popper.min.js"></script>
+    <script src="bootstrap.min.js"></script>
+    <script src="bootstrap-table.js"></script>
+
+    <script>
+        $(function () {
+            $("#tabs").tabs();
+        });
+    </script>
+</head>
+<body>
+<div id="tabs">
+    <ul>
+        <li><a href="#tabs-1">User</a></li>
+        <li><a href="#tabs-2">Admin</a></li>
+    </ul>
+    <div id="tabs-1">
+        <table data-pagination="true" data-search="true" data-toggle="table" data-url="http://localhost:8080/ria-app/rest/cars">
+            <thead>
+            <tr>
+                <th data-sortable="true" data-field="id">Car ID</th>
+                <th data-field="model">Car Model</th>
+                <th data-field="year">Year</th>
+                <th data-field="body">Body Type</th>
+                <th data-field="doors">Doors</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+    <div id="tabs-2">
+        <table data-pagination="true" data-search="true" data-toggle="table" data-url="http://localhost:8080/ria-app/rest/cars">
+            <thead>
+            <tr>
+                <th data-sortable="true" data-field="id">Car ID</th>
+                <th data-sortable="true" data-field="model">Car Model</th>
+                <th data-sortable="true" data-field="year">Year</th>
+                <th data-sortable="true" data-field="body">Body Type</th>
+                <th data-field="doors">Doors</th>
+            </tr>
+            </thead>
+        </table>
+    </div>
+</div>
+</body>
+</html>

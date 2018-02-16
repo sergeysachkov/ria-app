@@ -1,6 +1,7 @@
 package edu.ait.ria.ejb.jpa;
 
 import edu.ait.ria.ejb.model.Car;
+import edu.ait.ria.ejb.model.Engine;
 
 import javax.ejb.LocalBean;
 import javax.ejb.Stateless;
@@ -22,9 +23,24 @@ public class CarDao {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void addCars(Car car) {
+    public void addCar(Car car) {
         em.persist(car.getEngine());
         em.persist(car);
+    }
+
+
+    @TransactionAttribute(TransactionAttributeType.REQUIRED)
+    public void updateCar(Car car) {
+        Car carUpdated = em.find(Car.class, car.getId());
+        carUpdated.setModel(car.getModel());
+        carUpdated.setDoors(car.getDoors());
+        carUpdated.setYear(car.getYear());
+        carUpdated.setBody(car.getBody());
+        Engine engine = em.find(Engine.class, car.getEngine().getId());
+        engine.setCylinders(car.getEngine().getCylinders());
+        engine.setFuel(car.getEngine().getFuel());
+        engine.setSize(car.getEngine().getSize());
+        engine.setTransmission(car.getEngine().getTransmission());
     }
 
     public void deleteCar(long id) {

@@ -24,6 +24,16 @@ public class CarService {
         return carDao.getCar(id);
     }
 
+    @PUT
+    @Path("/{id}")
+    @Produces(MediaType.APPLICATION_JSON)
+    public void updateCar(@PathParam("id") long id, Car car) {
+        if(car.getId() == 0){
+            car.setId(id);
+        }
+        carDao.updateCar(car);
+    }
+
     @GET
     @Produces(MediaType.APPLICATION_JSON)
     public List<Car> getCars() {
@@ -41,7 +51,7 @@ public class CarService {
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
     public void addCar(Car car) {
-        carDao.addCars(car);
+        carDao.addCar(car);
     }
 
     @DELETE

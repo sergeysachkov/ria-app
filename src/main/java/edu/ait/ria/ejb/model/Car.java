@@ -10,7 +10,7 @@ public class Car {
     @GeneratedValue(strategy=GenerationType.IDENTITY)
     private long id;
     private String model;
-    private String year;
+    private int year;
     private String body;
     @OneToOne(optional=false)
     @JoinColumn(name = "id")
@@ -33,11 +33,11 @@ public class Car {
         this.model = model;
     }
 
-    public String getYear() {
+    public int getYear() {
         return year;
     }
 
-    public void setYear(String year) {
+    public void setYear(int year) {
         this.year = year;
     }
 
