@@ -11,11 +11,112 @@
     <script src="popper.min.js"></script>
     <script src="bootstrap.min.js"></script>
     <script src="bootstrap-table.js"></script>
+    <script src="bootstrap-table-toolbar.min.js"></script>
 
     <script>
         $(function () {
             $("#tabs").tabs();
+            pupolateCars();
+            var max = new Date().getFullYear(),
+                min = max - 20;
+            for (var i = max; i >= min; i--) {
+                var opt = document.createElement('option');
+                opt.value = i;
+                opt.innerHTML = i;
+                $('#carYear').append(opt);
+            }
+            $('#carButton').on('click', function () {
+                var data = {};
+                data.model = $('#carModel').val();
+                data.body = $('#carBody').val();
+                data.year = $('#carYear').val();
+                data.doors = $('#carDoors').val();
+                data.engine = {};
+                data.engine.size = $('#engineSize').val();
+                data.engine.fuel = $('#engineFuel').val();
+                data.engine.cylinders = $('#engineCylinders').val();
+                data.engine.transmission = $('#engineTransmission').val();
+                $.ajax(
+                    {
+                        url: "http://localhost:8080/ria-app/rest/cars",
+                        type: "POST",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        cache: false,
+                        processData: false,
+                        success: function () {
+                            $('#user-table').bootstrapTable('refresh');
+                            $('#admin-table').bootstrapTable('refresh');
+                            $('#myModal').modal('toggle');
+                        },
+                        error: function () {
+                            alert('failed to create car!');
+                        }
+                    });
+
+            });
+
         });
+
+        var onShowRemoveSelected = function () {
+            alert('Action');
+        };
+        var pupolateCars = function () {
+            $.ajax(
+                {
+                    url: "http://localhost:8080/ria-app/rest/cars",
+                    type: "GET",
+                    contentType: "application/json",
+                    cache: false,
+                    processData: false,
+                    success: function (res) {
+                        dtTable('#user-table', res);
+                        dtTable('#admin-table', res);
+                    },
+                    error: function () {
+                        alert('failed to create car!');
+                    }
+                });
+        };
+        var dtTable = function (id, data) {
+            $(id).bootstrapTable({
+                url: 'http://localhost:8080/ria-app/rest/cars',
+                data: data,
+                pagination: true,
+                search: true,
+                columns: [{
+                    field: 'id',
+                    title: 'Car ID'
+                }, {
+                    field: 'model',
+                    sortable: 'true',
+                    title: 'Car Model'
+                }, {
+                    field: 'year',
+                    sortable: 'true',
+                    title: 'Year'
+                }, {
+                    field: 'body',
+                    sortable: 'true',
+                    title: 'Body Type'
+                }, {
+                    field: 'doors',
+                    sortable: 'true',
+                    title: 'Doors'
+                }, {
+                    field: 'engine.size',
+                    sortable: 'true',
+                    title: 'Engine Size'
+                }],
+                customToolbarButtons: [{
+                    name: "remove",
+                    title: "Remove Selected",
+                    icon: "glyphicon-remove",
+                    callback: onShowRemoveSelected
+                }]
+            });
+        };
+
     </script>
 </head>
 <body>
@@ -25,30 +126,69 @@
         <li><a href="#tabs-2">Admin</a></li>
     </ul>
     <div id="tabs-1">
-        <table data-pagination="true" data-search="true" data-toggle="table" data-url="http://localhost:8080/ria-app/rest/cars">
-            <thead>
-            <tr>
-                <th data-sortable="true" data-field="id">Car ID</th>
-                <th data-field="model">Car Model</th>
-                <th data-field="year">Year</th>
-                <th data-field="body">Body Type</th>
-                <th data-field="doors">Doors</th>
-            </tr>
-            </thead>
-        </table>
+        <table id="user-table"></table>
     </div>
     <div id="tabs-2">
-        <table data-pagination="true" data-search="true" data-toggle="table" data-url="http://localhost:8080/ria-app/rest/cars">
-            <thead>
-            <tr>
-                <th data-sortable="true" data-field="id">Car ID</th>
-                <th data-sortable="true" data-field="model">Car Model</th>
-                <th data-sortable="true" data-field="year">Year</th>
-                <th data-sortable="true" data-field="body">Body Type</th>
-                <th data-field="doors">Doors</th>
-            </tr>
-            </thead>
-        </table>
+        <table id="admin-table"></table>
+        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+            Create Car
+        </button>
+    </div>
+</div>
+
+
+<!-- Modal -->
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title" id="exampleModalLabel">Car</h5>
+                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                    <span aria-hidden="true">&times;</span>
+                </button>
+            </div>
+            <div class="modal-body">
+                <label for="carId">Car id</label>
+                <input type="text" class="form-control" id="carId" disabled>
+                <label for="carBody">Body</label>
+                <select id="carBody" class="form-control">
+                    <option selected>SUV</option>
+                    <option>Saloon</option>
+                    <option>Coupe</option>
+                    <option>HatchBack</option>
+                    <option>Cabriolet</option>
+                </select>
+                <label for="carModel">Model</label>
+                <input type="text" class="form-control" id="carModel">
+
+                <label for="carYear">Year</label>
+                <select id="carYear" class="form-control"></select>
+                <label for="carDoors">Doors</label>
+                <input type="text" class="form-control" id="carDoors">
+                <label for="engineId">Engine Id</label>
+                <input type="text" class="form-control" id="engineId" disabled>
+                <label for="engineSize">Engine Size</label>
+                <input type="text" class="form-control" id="engineSize">
+                <label for="engineFuel">Fuel</label>
+                <select id="engineFuel" class="form-control">
+                    <option>Petrol</option>
+                    <option>Diesel</option>
+                    <option>Electric</option>
+                    <option>Hybrid</option>
+                </select>
+                <label for="engineTransmission">Transmission</label>
+                <select id="engineTransmission" class="form-control">
+                    <option>Manual</option>
+                    <option>Automatic</option>
+                </select>
+                <label for="engineCylinders">Cylinders</label>
+                <input type="text" class="form-control" id="engineCylinders">
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                <button type="button" id="carButton" class="btn btn-primary">Create Car</button>
+            </div>
+        </div>
     </div>
 </div>
 </body>
