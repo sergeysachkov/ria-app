@@ -3,20 +3,26 @@
 <head>
     <meta charset="UTF-8">
     <title>Cars</title>
-    <link rel="stylesheet" href="jquery-ui.css">
-    <link rel="stylesheet" href="bootstrap.min.css">
-    <link rel="stylesheet" href="bootstrap-table.css">
-    <script src="jquery-3.3.1.min.js"></script>
-    <script src="jquery-ui.js"></script>
-    <script src="popper.min.js"></script>
-    <script src="bootstrap.min.js"></script>
-    <script src="bootstrap-table.js"></script>
-    <script src="bootstrap-table-toolbar.min.js"></script>
+    <link rel="stylesheet" href="css/jquery-ui.css">
+    <link rel="stylesheet" href="css/bootstrap.min.css">
+    <link rel="stylesheet" href="css/bootstrap-table.css">
+    <script src="js/jquery-3.3.1.min.js"></script>
+    <script src="js/jquery-ui.js"></script>
+    <script src="js/popper.min.js"></script>
+    <script src="js/bootstrap.min.js"></script>
+    <script src="js/bootstrap-table.js"></script>
+    <script src="js/bootstrap-table-toolbar.min.js"></script>
+
+    <style>
+        .ml10 {
+            margin-left: 10px;
+        }
+    </style>
 
     <script>
         $(function () {
             $("#tabs").tabs();
-            pupolateCars();
+            populateCars();
             var max = new Date().getFullYear(),
                 min = max - 20;
             for (var i = max; i >= min; i--) {
@@ -27,6 +33,7 @@
             }
             $('#carButton').on('click', function () {
                 var data = {};
+                modal.find('.modal-title').text('Create Car');
                 data.model = $('#carModel').val();
                 data.body = $('#carBody').val();
                 data.year = $('#carYear').val();
@@ -36,6 +43,8 @@
                 data.engine.fuel = $('#engineFuel').val();
                 data.engine.cylinders = $('#engineCylinders').val();
                 data.engine.transmission = $('#engineTransmission').val();
+                $('#carButton').show();
+                $('#carButtonUpdate').hide();
                 $.ajax(
                     {
                         url: "http://localhost:8080/ria-app/rest/cars",
@@ -45,8 +54,8 @@
                         cache: false,
                         processData: false,
                         success: function () {
-                            $('#user-table').bootstrapTable('refresh');
-                            $('#admin-table').bootstrapTable('refresh');
+                            adminRefresh();
+                            userRefresh();
                             $('#myModal').modal('toggle');
                         },
                         error: function () {
@@ -56,12 +65,28 @@
 
             });
 
+            $('#modalButton').on('click', function () {
+                var modal = $('#myModal');
+                modal.find('.modal-title').text('Create Car');
+                $('#carId').val('');
+                $('#carModel').val('');
+                $('#carBody').val('SUV');
+                $('#carYear').val('2018');
+                $('#carDoors').val('');
+                $('#engineId').val('');
+                $('#engineSize').val('');
+                $('#engineFuel').val('Petrol');
+                $('#engineCylinders').val('');
+                $('#engineTransmission').val('Manual');
+
+                $('#carButton').show();
+                $('#carButtonUpdate').hide();
+                modal.show();
+            });
+
         });
 
-        var onShowRemoveSelected = function () {
-            alert('Action');
-        };
-        var pupolateCars = function () {
+        var populateCars = function () {
             $.ajax(
                 {
                     url: "http://localhost:8080/ria-app/rest/cars",
@@ -70,16 +95,50 @@
                     cache: false,
                     processData: false,
                     success: function (res) {
-                        dtTable('#user-table', res);
-                        dtTable('#admin-table', res);
+                        userTable(res);
+                        adminTable(res);
                     },
                     error: function () {
                         alert('failed to create car!');
                     }
                 });
         };
-        var dtTable = function (id, data) {
-            $(id).bootstrapTable({
+        var adminTable = function (data) {
+            $('#admin-table').bootstrapTable({
+                url: 'http://localhost:8080/ria-app/rest/cars',
+                data: data,
+                pagination: true,
+                search: true,
+                columns: [{
+                    field: 'id',
+                    title: 'Car ID'
+                }, {
+                    field: 'model',
+                    sortable: 'true',
+                    title: 'Car Model'
+                }, {
+                    field: 'year',
+                    sortable: 'true',
+                    title: 'Year'
+                }, {
+                    field: 'body',
+                    sortable: 'true',
+                    title: 'Body Type'
+                }, {
+                    field: 'doors',
+                    sortable: 'true',
+                    title: 'Doors'
+                }, {
+                    field: 'action',
+                    formatter: 'actionFormatter',
+                    events: 'actionEvents',
+                    title: 'Action'
+                }]
+            });
+        };
+
+        var userTable = function (data) {
+            $('#user-table').bootstrapTable({
                 url: 'http://localhost:8080/ria-app/rest/cars',
                 data: data,
                 pagination: true,
@@ -107,14 +166,81 @@
                     field: 'engine.size',
                     sortable: 'true',
                     title: 'Engine Size'
-                }],
-                customToolbarButtons: [{
-                    name: "remove",
-                    title: "Remove Selected",
-                    icon: "glyphicon-remove",
-                    callback: onShowRemoveSelected
-                }]
+                }, {
+                    field: 'engine.cylinders',
+                    sortable: 'true',
+                    title: 'Cylinders'
+                }, {
+                    field: 'engine.fuel',
+                    sortable: 'true',
+                    title: 'Fuel'
+                }, {
+                    field: 'engine.transmission',
+                    sortable: 'true',
+                    title: 'Transmission'
+                }
+                ]
             });
+        };
+
+        var adminRefresh = function(){
+            $('#admin-table').bootstrapTable('refresh');
+        };
+        var userRefresh = function(){
+            $('#user-table').bootstrapTable('refresh');
+        };
+
+        function actionFormatter(value, row, index) {
+            return [
+                '<a class="edit ml10" href="javascript:void(0)" title="Edit">',
+                '<i class="glyphicon glyphicon-edit"></i>',
+                '</a>',
+                '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
+                '<i class="glyphicon glyphicon-remove"></i>',
+                '</a>'
+            ].join('');
+        }
+
+        window.actionEvents = {
+            'click .edit': function (e, value, row, index) {
+                var modal = $('#myModal');
+                modal.find('.modal-title').text('Update Car');
+                $('#carId').val(row.id);
+                $('#carModel').val(row.model);
+                $('#carBody').val(row.body);
+                $('#carYear').val(row.year);
+                $('#carDoors').val(row.doors);
+                $('#engineId').val(row.engine.id);
+                $('#engineSize').val(row.engine.size);
+                $('#engineFuel').val(row.engine.fuel);
+                $('#engineCylinders').val(row.engine.cylinders);
+                $('#engineTransmission').val(row.engine.transmission);
+                $('#carButton').hide();
+                $('#carButtonUpdate').show();
+                modal.modal();
+            },
+            'click .remove': function (e, value, row, index) {
+                var $table = $('#admin-table');
+                $table.bootstrapTable('remove', {
+                    field: 'id',
+                    values: [row.id]
+                });
+                $.ajax(
+                    {
+                        url: "http://localhost:8080/ria-app/rest/cars/" + row.id,
+                        type: "DELETE",
+                        contentType: "application/json",
+                        cache: false,
+                        processData: false,
+                        success: function (res) {
+                            userRefresh();
+                        },
+                        error: function () {
+                            alert('failed to delete car with id: ' + row.id + '!');
+                            adminRefresh();
+                        }
+                    });
+            }
         };
 
     </script>
@@ -130,7 +256,7 @@
     </div>
     <div id="tabs-2">
         <table id="admin-table"></table>
-        <button type="button" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+        <button type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
             Create Car
         </button>
     </div>
@@ -142,7 +268,7 @@
     <div class="modal-dialog" role="document">
         <div class="modal-content">
             <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Car</h5>
+                <h5 class="modal-title" id="exampleModalLabel">Create Car</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -187,6 +313,7 @@
             <div class="modal-footer">
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 <button type="button" id="carButton" class="btn btn-primary">Create Car</button>
+                <button type="button" id="carButtonUpdate" class="btn btn-primary" style="display: none;" >Update Car</button>
             </div>
         </div>
     </div>
