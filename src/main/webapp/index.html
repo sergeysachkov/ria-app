@@ -33,7 +33,6 @@
             }
             $('#carButton').on('click', function () {
                 var data = {};
-                modal.find('.modal-title').text('Create Car');
                 data.model = $('#carModel').val();
                 data.body = $('#carBody').val();
                 data.year = $('#carYear').val();
@@ -43,8 +42,6 @@
                 data.engine.fuel = $('#engineFuel').val();
                 data.engine.cylinders = $('#engineCylinders').val();
                 data.engine.transmission = $('#engineTransmission').val();
-                $('#carButton').show();
-                $('#carButtonUpdate').hide();
                 $.ajax(
                     {
                         url: "http://localhost:8080/ria-app/rest/cars",
@@ -60,6 +57,39 @@
                         },
                         error: function () {
                             alert('failed to create car!');
+                        }
+                    });
+
+            });
+
+            $('#carButtonUpdate').on('click', function () {
+                var data = {};
+                data.id = $('#carId').val();
+                data.model = $('#carModel').val();
+                data.body = $('#carBody').val();
+                data.year = $('#carYear').val();
+                data.doors = $('#carDoors').val();
+                data.engine = {};
+                data.engine.id = $('#engineId').val();
+                data.engine.size = $('#engineSize').val();
+                data.engine.fuel = $('#engineFuel').val();
+                data.engine.cylinders = $('#engineCylinders').val();
+                data.engine.transmission = $('#engineTransmission').val();
+                $.ajax(
+                    {
+                        url: "http://localhost:8080/ria-app/rest/cars/" + data.id,
+                        type: "PUT",
+                        contentType: "application/json",
+                        data: JSON.stringify(data),
+                        cache: false,
+                        processData: false,
+                        success: function () {
+                            adminRefresh();
+                            userRefresh();
+                            $('#myModal').modal('toggle');
+                        },
+                        error: function () {
+                            alert('failed to update car!');
                         }
                     });
 
