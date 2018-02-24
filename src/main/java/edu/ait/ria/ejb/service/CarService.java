@@ -43,8 +43,8 @@ public class CarService {
     @GET
     @Path("/find")
     @Produces(MediaType.APPLICATION_JSON)
-    public List<Car> getCarsByModel(@QueryParam("field") String field, @QueryParam("value") String value) {
-        return carDao.getCarsByModel(field, value);
+    public List<Car> getCarsByFieldValue(@QueryParam("field") String field, @QueryParam("value") String value) {
+        return carDao.getCarsByFieldValue(field, value);
     }
 
     @POST

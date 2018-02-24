@@ -5,6 +5,8 @@
         http://jboss.org/schema/arquillian/arquillian_1_0.xsd">
     <container qualifier="jboss7" default="true">
         <configuration>
+            <property name="jbossHome">C:/opt/jboss-as-7.1.1.Final</property>
+            <property name="javaHome">C:/Program Files/Java/jdk1.7.0_79/</property>
             <property name="managementAddress">127.0.0.1</property>
             <property name="managementPort">9999</property>
         </configuration>

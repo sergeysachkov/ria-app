@@ -54,7 +54,7 @@ public class CarDao {
         return listPersons;
     }
 
-    public List<Car> getCarsByModel(String field, String value) {
+    public List<Car> getCarsByFieldValue(String field, String value) {
         try {
             String param;
             if(field.contains(".")){
