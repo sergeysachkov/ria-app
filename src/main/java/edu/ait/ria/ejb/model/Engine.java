@@ -60,8 +60,7 @@ public class Engine {
         if (this == o) return true;
         if (o == null || getClass() != o.getClass()) return false;
         Engine engine = (Engine) o;
-        return id == engine.id &&
-                cylinders == engine.cylinders &&
+        return  cylinders == engine.cylinders &&
                 Objects.equals(size, engine.size) &&
                 Objects.equals(fuel, engine.fuel) &&
                 Objects.equals(transmission, engine.transmission);

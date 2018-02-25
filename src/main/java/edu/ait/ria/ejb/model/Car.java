@@ -71,7 +71,6 @@ public class Car {
         if (o == null || getClass() != o.getClass()) return false;
         Car car = (Car) o;
         return doors == car.doors &&
-                Objects.equals(id, car.id) &&
                 Objects.equals(model, car.model) &&
                 Objects.equals(year, car.year) &&
                 Objects.equals(body, car.body) &&
