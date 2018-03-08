@@ -187,7 +187,21 @@
             $('#admin-table').bootstrapTable('refresh');
         };
         var userRefresh = function(){
-            $('#user-table').bootstrapTable('refresh');
+            $.ajax(
+                {
+                    url: "http://localhost:8080/ria-app/rest/cars",
+                    type: "GET",
+                    contentType: "application/json",
+                    cache: false,
+                    processData: false,
+                    success: function (res) {
+                        $('#productList').empty();
+                        userTable(res);
+                    },
+                    error: function () {
+                        alert('failed to create car!');
+                    }
+                });
         };
 
         function actionFormatter(value, row, index) {
