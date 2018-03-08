@@ -168,49 +168,19 @@
         };
 
         var userTable = function (data) {
-            $('#user-table').bootstrapTable({
-                url: 'http://localhost:8080/ria-app/rest/cars',
-                data: data,
-                pagination: true,
-                search: true,
-                columns: [{
-                    field: 'id',
-                    title: 'Car ID'
-                }, {
-                    field: 'model',
-                    sortable: 'true',
-                    title: 'Car Model'
-                }, {
-                    field: 'year',
-                    sortable: 'true',
-                    title: 'Year'
-                }, {
-                    field: 'body',
-                    sortable: 'true',
-                    title: 'Body Type'
-                }, {
-                    field: 'doors',
-                    sortable: 'true',
-                    title: 'Doors'
-                }, {
-                    field: 'engine.size',
-                    sortable: 'true',
-                    title: 'Engine Size'
-                }, {
-                    field: 'engine.cylinders',
-                    sortable: 'true',
-                    title: 'Cylinders'
-                }, {
-                    field: 'engine.fuel',
-                    sortable: 'true',
-                    title: 'Fuel'
-                }, {
-                    field: 'engine.transmission',
-                    sortable: 'true',
-                    title: 'Transmission'
-                }
-                ]
-            });
+          var output = '<div class="row">';
+          $.each(data, function(index, car){
+              var img = "images/notfound.png";
+              output += '<div class="col-sm-6 col-md-4 col-lg-3"> <div class="card"> <img src=' + '"' + img + '"' +
+                  'height="150"> <div class="card-block"> <h4 class="card-title">Model: ' + car.model + '</h4>' +
+                  '<p class="card-text">Year: ' + car.year + '</p>'+
+                  '<p class="card-text">Body:' + car.body + '</p>'+
+                  '<p class="card-text">Doors: ' + car.doors + '</p>'+
+                  '<p class="card-text">Engine Size: ' + car.engine.size + '</p> </div></div></div>';
+          });
+
+          output += '</div>';
+          $('#productList').append(output);
         };
 
         var adminRefresh = function(){
@@ -278,11 +248,15 @@
 <body>
 <div id="tabs">
     <ul>
+        <li><a href="#tabs-0">Home</a></li>
         <li><a href="#tabs-1">User</a></li>
         <li><a href="#tabs-2">Admin</a></li>
     </ul>
+    <div id="tabs-0">
+        <h1>Home Page</h1>
+    </div>
     <div id="tabs-1">
-        <table id="user-table"></table>
+        <div id="productList"></div>
     </div>
     <div id="tabs-2">
         <table id="admin-table"></table>
