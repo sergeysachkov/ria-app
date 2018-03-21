@@ -6,6 +6,8 @@
     <link rel="stylesheet" href="css/jquery-ui.css">
     <link rel="stylesheet" href="css/bootstrap.min.css">
     <link rel="stylesheet" href="css/bootstrap-table.css">
+    <link rel="stylesheet" href="css/fontawesome-all.min.css">
+
     <script src="js/jquery-3.3.1.min.js"></script>
     <script src="js/jquery-ui.js"></script>
     <script src="js/popper.min.js"></script>
@@ -207,10 +209,10 @@
         function actionFormatter(value, row, index) {
             return [
                 '<a class="edit ml10" href="javascript:void(0)" title="Edit">',
-                '<i class="glyphicon glyphicon-edit"></i>',
+                '<i class="far fa-edit"></i>',
                 '</a>',
                 '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
-                '<i class="glyphicon glyphicon-remove"></i>',
+                '<i class="fa fa-times-circle"></i>',
                 '</a>'
             ].join('');
         }
