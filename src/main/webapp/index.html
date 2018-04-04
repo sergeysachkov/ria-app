@@ -14,6 +14,16 @@
     <script src="js/bootstrap.min.js"></script>
     <script src="js/bootstrap-table.js"></script>
     <script src="js/bootstrap-table-toolbar.min.js"></script>
+    <script src="js/underscore-min.js"></script>
+    <script src="js/backbone-min.js"></script>
+    <script src="js/models.js"></script>
+    <script src="js/mainView.js"></script>
+    <script src="js/detailsView.js"></script>
+    <script src="js/CarView.js"></script>
+    <script src="js/AdminView.js"></script>
+    <script src="js/AdminTableView.js"></script>
+    <script src="js/AdminRowView.js"></script>
+    <script src="js/app.js"></script>
 
     <style>
         .ml10 {
@@ -24,241 +34,125 @@
     <script>
         $(function () {
             $("#tabs").tabs();
-            populateCars();
-            var max = new Date().getFullYear(),
-                min = max - 20;
-            for (var i = max; i >= min; i--) {
-                var opt = document.createElement('option');
-                opt.value = i;
-                opt.innerHTML = i;
-                $('#carYear').append(opt);
-            }
-            $('#carButton').on('click', function () {
-                var data = {};
-                data.model = $('#carModel').val();
-                data.body = $('#carBody').val();
-                data.year = $('#carYear').val();
-                data.doors = $('#carDoors').val();
-                data.engine = {};
-                data.engine.size = $('#engineSize').val();
-                data.engine.fuel = $('#engineFuel').val();
-                data.engine.cylinders = $('#engineCylinders').val();
-                data.engine.transmission = $('#engineTransmission').val();
-                $.ajax(
-                    {
-                        url: "http://localhost:8080/ria-app/rest/cars",
-                        type: "POST",
-                        contentType: "application/json",
-                        data: JSON.stringify(data),
-                        cache: false,
-                        processData: false,
-                        success: function () {
-                            adminRefresh();
-                            userRefresh();
-                            $('#myModal').modal('toggle');
-                        },
-                        error: function () {
-                            alert('failed to create car!');
-                        }
-                    });
-
-            });
-
-            $('#carButtonUpdate').on('click', function () {
-                var data = {};
-                data.id = $('#carId').val();
-                data.model = $('#carModel').val();
-                data.body = $('#carBody').val();
-                data.year = $('#carYear').val();
-                data.doors = $('#carDoors').val();
-                data.engine = {};
-                data.engine.id = $('#engineId').val();
-                data.engine.size = $('#engineSize').val();
-                data.engine.fuel = $('#engineFuel').val();
-                data.engine.cylinders = $('#engineCylinders').val();
-                data.engine.transmission = $('#engineTransmission').val();
-                $.ajax(
-                    {
-                        url: "http://localhost:8080/ria-app/rest/cars/" + data.id,
-                        type: "PUT",
-                        contentType: "application/json",
-                        data: JSON.stringify(data),
-                        cache: false,
-                        processData: false,
-                        success: function () {
-                            adminRefresh();
-                            userRefresh();
-                            $('#myModal').modal('toggle');
-                        },
-                        error: function () {
-                            alert('failed to update car!');
-                        }
-                    });
-
-            });
-
-            $('#modalButton').on('click', function () {
-                var modal = $('#myModal');
-                modal.find('.modal-title').text('Create Car');
-                $('#carId').val('');
-                $('#carModel').val('');
-                $('#carBody').val('SUV');
-                $('#carYear').val('2018');
-                $('#carDoors').val('');
-                $('#engineId').val('');
-                $('#engineSize').val('');
-                $('#engineFuel').val('Petrol');
-                $('#engineCylinders').val('');
-                $('#engineTransmission').val('Manual');
-
-                $('#carButton').show();
-                $('#carButtonUpdate').hide();
-                modal.show();
-            });
-
         });
+    </script>
+    <script type="text/template" id="car_details">
+            <div class="modal-dialog" role="document">
+                <div class="modal-content">
+                    <div class="modal-header">
+                        <% if (id == null || id == '') { %>
+                           <h5 class="modal-title" id="exampleModalLabel">Create Car</h5>
+                        <% } else {%>
+                           <h5 class="modal-title" id="exampleModalLabel">Update Car</h5>
+                        <% } %>
+                        <button type="button" class="close" data-dismiss="modal" aria-label="Close">
+                            <span aria-hidden="true">&times;</span>
+                        </button>
+                    </div>
+                    <div class="modal-body">
+                        <label for="carId">Car id</label>
+                        <input type="text" class="form-control" id="carId" value="<%= id %>" disabled>
+                        <label for="carBody">Body</label>
+                        <select id="carBody" class="form-control">
+                            <option <% if(body == 'Saloon'){ %> selected <% } %> >Saloon</option>
+                            <option <% if(body == 'Coupe'){ %> selected <% } %>  >Coupe</option>
+                            <option <% if(body == 'HatchBack'){ %> selected <% } %> >HatchBack</option>
+                            <option <% if(body == 'Cabriolet'){ %> selected <% } %> >Cabriolet</option>
+                            <option <% if(body == 'SUV'){ %> selected <% } %> >SUV</option>
+                        </select>
+                        <label for="carModel">Model</label>
+                        <input type="text" class="form-control" id="carModel" value="<%= model %>" >
 
-        var populateCars = function () {
-            $.ajax(
-                {
-                    url: "http://localhost:8080/ria-app/rest/cars",
-                    type: "GET",
-                    contentType: "application/json",
-                    cache: false,
-                    processData: false,
-                    success: function (res) {
-                        userTable(res);
-                        adminTable(res);
-                    },
-                    error: function () {
-                        alert('failed to create car!');
-                    }
-                });
-        };
-        var adminTable = function (data) {
-            $('#admin-table').bootstrapTable({
-                url: 'http://localhost:8080/ria-app/rest/cars',
-                data: data,
-                pagination: true,
-                search: true,
-                columns: [{
-                    field: 'id',
-                    title: 'Car ID'
-                }, {
-                    field: 'model',
-                    sortable: 'true',
-                    title: 'Car Model'
-                }, {
-                    field: 'year',
-                    sortable: 'true',
-                    title: 'Year'
-                }, {
-                    field: 'body',
-                    sortable: 'true',
-                    title: 'Body Type'
-                }, {
-                    field: 'doors',
-                    sortable: 'true',
-                    title: 'Doors'
-                }, {
-                    field: 'action',
-                    formatter: 'actionFormatter',
-                    events: 'actionEvents',
-                    title: 'Action'
-                }]
-            });
-        };
+                        <label for="carYear">Year</label>
+                        <select id="carYear" class="form-control">
+                        <% var max = new Date().getFullYear(),
+                           min = max - 20;
+                           for (var i = max; i >= min; i--) {
+                            if(i == year) {
+                        %>
+                              <option selected><%= i %></option>
+                         <%
+                             }else{
+                        %>
+                           <option><%= i %></option>
+                        <%
+                             }
+                           }
+                        %>
+                        </select>
+                        <label for="carDoors">Doors</label>
+                        <input type="text" class="form-control" id="carDoors" value="<%= doors %>" >
+                        <label for="engineId">Engine Id</label>
+                        <input type="text" class="form-control" id="engineId" value="<%= engine.id %>" disabled>
+                        <label for="engineSize">Engine Size</label>
+                        <input type="text" class="form-control" id="engineSize" value="<%= engine.size %>" >
+                        <label for="engineFuel">Fuel</label>
+                        <select id="engineFuel" class="form-control" >
+                            <option <% if(engine.fuel == 'Petrol'){ %> selected <% } %> >Petrol</option>
+                            <option <% if(engine.fuel == 'Diesel'){ %> selected <% } %> >Diesel</option>
+                            <option <% if(engine.fuel == 'Electric'){ %> selected <% } %> >Electric</option>
+                            <option <% if(engine.fuel == 'Hybrid'){ %> selected <% } %> >Hybrid</option>
+                        </select>
+                        <label for="engineTransmission">Transmission</label>
+                        <select id="engineTransmission" class="form-control" >
+                            <option  <% if(engine.transmission == 'Manual'){ %> selected <% } %>  >Manual</option>
+                            <option  <% if(engine.transmission == 'Automatic'){ %> selected <% } %>  >Automatic</option>
+                        </select>
+                        <label for="engineCylinders">Cylinders</label>
+                        <input type="text" class="form-control" id="engineCylinders" value="<%= engine.cylinders %>">
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                        <% if (id == null || id == '') { %>
+                           <button type="button" id="carButton" class="btn btn-primary">Create Car</button>
+                        <% } else {%>
+                          <button type="button" id="carButton" class="btn btn-primary">Update Car</button>
+                          <button id="btnDelete">Delete</button>
+                        <% } %>
 
-        var userTable = function (data) {
-          var output = '<div class="row">';
-          $.each(data, function(index, car){
-              var img = "images/notfound.png";
-              output += '<div class="col-sm-6 col-md-4 col-lg-3"> <div class="card"> <img src=' + '"' + img + '"' +
-                  'height="150"> <div class="card-block"> <h4 class="card-title">Model: ' + car.model + '</h4>' +
-                  '<p class="card-text">Year: ' + car.year + '</p>'+
-                  '<p class="card-text">Body:' + car.body + '</p>'+
-                  '<p class="card-text">Doors: ' + car.doors + '</p>'+
-                  '<p class="card-text">Engine Size: ' + car.engine.size + '</p> </div></div></div>';
-          });
+                    </div>
+                </div>
+        </div>
 
-          output += '</div>';
-          $('#productList').append(output);
-        };
+    </script>
 
-        var adminRefresh = function(){
-            $('#admin-table').bootstrapTable('refresh');
-        };
-        var userRefresh = function(){
-            $.ajax(
-                {
-                    url: "http://localhost:8080/ria-app/rest/cars",
-                    type: "GET",
-                    contentType: "application/json",
-                    cache: false,
-                    processData: false,
-                    success: function (res) {
-                        $('#productList').empty();
-                        userTable(res);
-                    },
-                    error: function () {
-                        alert('failed to create car!');
-                    }
-                });
-        };
-
-        function actionFormatter(value, row, index) {
-            return [
-                '<a class="edit ml10" href="javascript:void(0)" title="Edit">',
-                '<i class="far fa-edit"></i>',
-                '</a>',
-                '<a class="remove ml10" href="javascript:void(0)" title="Remove">',
-                '<i class="fa fa-times-circle"></i>',
-                '</a>'
-            ].join('');
-        }
-
-        window.actionEvents = {
-            'click .edit': function (e, value, row, index) {
-                var modal = $('#myModal');
-                modal.find('.modal-title').text('Update Car');
-                $('#carId').val(row.id);
-                $('#carModel').val(row.model);
-                $('#carBody').val(row.body);
-                $('#carYear').val(row.year);
-                $('#carDoors').val(row.doors);
-                $('#engineId').val(row.engine.id);
-                $('#engineSize').val(row.engine.size);
-                $('#engineFuel').val(row.engine.fuel);
-                $('#engineCylinders').val(row.engine.cylinders);
-                $('#engineTransmission').val(row.engine.transmission);
-                $('#carButton').hide();
-                $('#carButtonUpdate').show();
-                modal.modal();
-            },
-            'click .remove': function (e, value, row, index) {
-                var $table = $('#admin-table');
-                $table.bootstrapTable('remove', {
-                    field: 'id',
-                    values: [row.id]
-                });
-                $.ajax(
-                    {
-                        url: "http://localhost:8080/ria-app/rest/cars/" + row.id,
-                        type: "DELETE",
-                        contentType: "application/json",
-                        cache: false,
-                        processData: false,
-                        success: function (res) {
-                            userRefresh();
-                        },
-                        error: function () {
-                            alert('failed to delete car with id: ' + row.id + '!');
-                            adminRefresh();
-                        }
-                    });
-            }
-        };
-
+    <script type="text/template" id="car_list">
+            <div class="card"> <img src="images/notfound.png" height="150">
+                <div class="card-block">
+                    <h4 class="card-title">Model: <%= model%> </h4>
+                    <p class="card-text">Year:   <%= year%> </p>
+                    <p class="card-text">Body:  <%= body %></p>
+                    <p class="card-text">Doors:  <%= doors%> </p>
+                    <p class="card-text">Engine Size:  <%= engine.size%> </p> </div></div>
+    </script>
+    <script type="text/template" id="admin_page">
+    <button type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
+        Create Car
+    </button>
+    </script>
+    <script type="text/template" id="admin_table">
+    <thead>
+    <tr>
+        <th data-sortable="true" data-field="id">Car ID</th>
+        <th data-field="model">Car Model</th>
+        <th data-field="year">Year</th>
+        <th data-field="body">Body Type</th>
+        <th data-field="doors">Doors</th>
+        <th>Action</th>
+    </tr>
+    </thead>
+    <tbody></tbody>
+    </script>
+    <script type="text/template" id="admin_table_row">
+        <td><%= id %></td>
+        <td><%= model %></td>
+        <td><%= year %></td>
+        <td><%= body %></td>
+        <td><%= doors %></td>
+        <td>
+        <button class="edit btn btn-default"><span class="far fa-edit"></span> </button>
+        <button class="edit btn btn-danger"><span class="fa fa-times-circle"></span> </button>
+        </td>
     </script>
 </head>
 <body>
@@ -272,70 +166,18 @@
         <h1>Home Page</h1>
     </div>
     <div id="tabs-1">
-        <div id="productList"></div>
+        <div>
+          <div id="carList" class="row"></div>
+        </div>
     </div>
     <div id="tabs-2">
-        <table id="admin-table"></table>
-        <button type="button" id="modalButton" class="btn btn-primary" data-toggle="modal" data-target="#myModal">
-            Create Car
-        </button>
-    </div>
-</div>
-
-
-<!-- Modal -->
-<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="exampleModalLabel" aria-hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title" id="exampleModalLabel">Create Car</h5>
-                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                    <span aria-hidden="true">&times;</span>
-                </button>
-            </div>
-            <div class="modal-body">
-                <label for="carId">Car id</label>
-                <input type="text" class="form-control" id="carId" disabled>
-                <label for="carBody">Body</label>
-                <select id="carBody" class="form-control">
-                    <option selected>SUV</option>
-                    <option>Saloon</option>
-                    <option>Coupe</option>
-                    <option>HatchBack</option>
-                    <option>Cabriolet</option>
-                </select>
-                <label for="carModel">Model</label>
-                <input type="text" class="form-control" id="carModel">
-
-                <label for="carYear">Year</label>
-                <select id="carYear" class="form-control"></select>
-                <label for="carDoors">Doors</label>
-                <input type="text" class="form-control" id="carDoors">
-                <label for="engineId">Engine Id</label>
-                <input type="text" class="form-control" id="engineId" disabled>
-                <label for="engineSize">Engine Size</label>
-                <input type="text" class="form-control" id="engineSize">
-                <label for="engineFuel">Fuel</label>
-                <select id="engineFuel" class="form-control">
-                    <option>Petrol</option>
-                    <option>Diesel</option>
-                    <option>Electric</option>
-                    <option>Hybrid</option>
-                </select>
-                <label for="engineTransmission">Transmission</label>
-                <select id="engineTransmission" class="form-control">
-                    <option>Manual</option>
-                    <option>Automatic</option>
-                </select>
-                <label for="engineCylinders">Cylinders</label>
-                <input type="text" class="form-control" id="engineCylinders">
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                <button type="button" id="carButton" class="btn btn-primary">Create Car</button>
-                <button type="button" id="carButtonUpdate" class="btn btn-primary" style="display: none;" >Update Car</button>
-            </div>
+        <div id="admin_data" >
+            <!--<div class="paginator row">
+                <div class="span4 pagination-info"> </div>
+                <div class="span8 pagination pagination-right pagination-boxes"></div>
+            </div>-->
         </div>
+        <div id="admin" ></div>
     </div>
 </div>
 </body>
