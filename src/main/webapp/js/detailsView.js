@@ -9,7 +9,7 @@ var DetailsView = Backbone.View.extend({
         this.render();
     },
 	  saveCar: function(e){
-		  alert("model"+this.model.get('model'));
+          console.log("model"+this.model.get('model'));
 
 		  var carDetails= {model:$('#carModel').val(),
                             year:$('#carYear').val(),
@@ -24,11 +24,11 @@ var DetailsView = Backbone.View.extend({
 
 		//  if (this.model.isNew()) {
 		  if (($('#carId').val()) == ''){
-			  alert("isnew");
+              console.log("isnew");
 			  this.model= new Car(carDetails);
-			  alert("test"+this.model.get('model'));
-			  //carList.add(this.model);
-			  alert("added");
+              console.log("test"+this.model.get('model'));
+              cars.add(this.model);
+              console.log("added");
 			  this.model.save({
                   model:$('#carModel').val(),
                   year:$('#carYear').val(),
@@ -42,8 +42,8 @@ var DetailsView = Backbone.View.extend({
                   }
 			  },{
 						  success:function(car){
-							  alert("sucess - added");
-							  $('#carId').val(id);
+                              console.log("sucess - added");
+							  $('#carId').val(car.id);
 							  mainView.renderList();
 						  }
 					  });
@@ -64,7 +64,7 @@ var DetailsView = Backbone.View.extend({
 			  }
 			  },{
 				  success:function(car){
-					  alert("sucess - updated " + car.get('doors'));
+                      console.log("sucess - updated " + car.get('doors'));
 					  mainView.renderList();
 				  }
 			  });
@@ -77,7 +77,7 @@ var DetailsView = Backbone.View.extend({
 		  this.model.set({id:id});
 		  this.model.destroy(
 				  {success:function(data){
-					  alert("car deleted");
+                          console.log`("car deleted");
 					  mainView.renderList();
 				  }
 		  });

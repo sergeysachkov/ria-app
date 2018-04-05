@@ -8,8 +8,6 @@ var CarView = Backbone.View.extend({
     initialize: function(){
         console.log("car view init");
         this.model.on('change', this.render, this);
-        //	console.log('Values for a model have changed');
-        // });
     },
     showModal: function(e){
         var car=this.model;

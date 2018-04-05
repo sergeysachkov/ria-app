@@ -1,6 +1,6 @@
 var MainView = Backbone.View.extend({
   collection: Cars,
-  id: "container",
+  //id: "container",
   initialize: function(){
    console.log("main view init");
    this.listenTo(this.collection, 'add', this.renderList);

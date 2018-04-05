@@ -23,9 +23,10 @@ public class CarDao {
     }
 
     @TransactionAttribute(TransactionAttributeType.REQUIRED)
-    public void addCar(Car car) {
+    public Car addCar(Car car) {
         em.persist(car.getEngine());
         em.persist(car);
+        return car;
     }
 
 

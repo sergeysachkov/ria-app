@@ -27,11 +27,12 @@ public class CarService {
     @PUT
     @Path("/{id}")
     @Produces(MediaType.APPLICATION_JSON)
-    public void updateCar(@PathParam("id") long id, Car car) {
+    public Car updateCar(@PathParam("id") long id, Car car) {
         if(car.getId() == 0){
             car.setId(id);
         }
         carDao.updateCar(car);
+        return car;
     }
 
     @GET
@@ -50,8 +51,8 @@ public class CarService {
     @POST
     @Consumes(MediaType.APPLICATION_JSON)
     @Produces(MediaType.APPLICATION_JSON)
-    public void addCar(Car car) {
-        carDao.addCar(car);
+    public Car addCar(Car car) {
+       return carDao.addCar(car);
     }
 
     @DELETE
