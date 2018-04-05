@@ -11,18 +11,17 @@ var MainView = Backbone.View.extend({
     this.collection.each(function(car){
     $('#carList').append(new CarView({model:car}).render());
     }, this);
-      $('#admin_data').append(new AdminTableView({collection:this.collection}).render().el);
+    adminTable = new AdminTableView({collection:this.collection});
+      $('#admin_data').append(adminTable.render().el);
       $('#admin').append(new AdminView({collection:this.collection}).render());
   },
   
   renderList:function(){
 	  $('#carList div').remove();
-      $('#admin_data table').remove();
       $('#admin div').remove();
 	  this.collection.each(function(car){
 		    $('#carList').append(new CarView({model:car}).render());
 		    }, this);
-      $('#admin_data').append(new AdminTableView({collection:this.collection}).render().el);
       $('#admin').append(new AdminView({collection:this.collection}).render());
   }
 

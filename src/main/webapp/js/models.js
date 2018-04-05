@@ -18,9 +18,6 @@ var Car = Backbone.Model.extend({
         },
     initialize: function(){
         console.log("car model init");
-        //this.on('change', function(){
-        //	console.log('Values for a model have changed');
-        // });
     }
 });
 

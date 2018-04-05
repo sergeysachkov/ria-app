@@ -44,6 +44,7 @@ var DetailsView = Backbone.View.extend({
 						  success:function(car){
                               console.log("sucess - added");
 							  $('#carId').val(car.id);
+							  adminTable.updateTable();
 							  mainView.renderList();
 						  }
 					  });
@@ -65,6 +66,7 @@ var DetailsView = Backbone.View.extend({
 			  },{
 				  success:function(car){
                       console.log("sucess - updated " + car.get('doors'));
+                      adminTable.updateTable();
 					  mainView.renderList();
 				  }
 			  });
@@ -77,7 +79,8 @@ var DetailsView = Backbone.View.extend({
 		  this.model.set({id:id});
 		  this.model.destroy(
 				  {success:function(data){
-                          console.log`("car deleted");
+				      console.log("car deleted");
+                      adminTable.updateTable();
 					  mainView.renderList();
 				  }
 		  });
@@ -85,21 +88,6 @@ var DetailsView = Backbone.View.extend({
 		  return false;
 	  },
 
-    addCar: function(e){
-          $('#btnDelete').hide();
-          $('#carId').val(null);
-          $('#carModel').val("");
-          $('#carBody').val("");
-          $('#carYear').val("");
-          $('#carDoors').val("");
-          $('#engineId').val(null);
-          $('#engineSize').val("");
-          $('#engineFuel').val("");
-          $('#engineCylinders').val("");
-          $('#engineTransmission').val("");
-		  return false;
-	  },
-	
     render: function() {
         console.log("render "+this.model.get('model'));
         var template= _.template($('#car_details').html(), this.model.toJSON());

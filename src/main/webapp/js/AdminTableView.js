@@ -9,6 +9,10 @@ var AdminTableView = Backbone.View.extend({
         'data-toggle' :'table',
         'data-url':'http://localhost:8080/ria-app/rest/cars'
     },
+    initialize: function() {
+        console.log("details init");
+        this.collection.on('change', this.updateTable, this);
+    },
     render:function(){
         console.log("render table view");
         console.log(" finished render table view");
@@ -61,5 +65,8 @@ var AdminTableView = Backbone.View.extend({
             }]
         });
         return this;
+    },
+    updateTable:function(){
+        $(this.el).find('table').bootstrapTable('refresh');
     }
 });

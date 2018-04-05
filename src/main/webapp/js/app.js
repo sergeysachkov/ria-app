@@ -1,5 +1,6 @@
 var mainView;
 var cars;
+var adminTable;
 
 $(document).ready(function(){
     cars = new Cars();

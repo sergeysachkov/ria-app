@@ -130,30 +130,6 @@
         Create Car
     </button>
     </script>
-    <script type="text/template" id="admin_table">
-    <thead>
-    <tr>
-        <th data-sortable="true" data-field="id">Car ID</th>
-        <th data-field="model">Car Model</th>
-        <th data-field="year">Year</th>
-        <th data-field="body">Body Type</th>
-        <th data-field="doors">Doors</th>
-        <th>Action</th>
-    </tr>
-    </thead>
-    <tbody></tbody>
-    </script>
-    <script type="text/template" id="admin_table_row">
-        <td><%= id %></td>
-        <td><%= model %></td>
-        <td><%= year %></td>
-        <td><%= body %></td>
-        <td><%= doors %></td>
-        <td>
-        <button class="edit btn btn-default"><span class="far fa-edit"></span> </button>
-        <button class="edit btn btn-danger"><span class="fa fa-times-circle"></span> </button>
-        </td>
-    </script>
 </head>
 <body>
 <div id="tabs">
@@ -171,12 +147,7 @@
         </div>
     </div>
     <div id="tabs-2">
-        <div id="admin_data" >
-            <!--<div class="paginator row">
-                <div class="span4 pagination-info"> </div>
-                <div class="span8 pagination pagination-right pagination-boxes"></div>
-            </div>-->
-        </div>
+        <div id="admin_data" ></div>
         <div id="admin" ></div>
     </div>
 </div>
