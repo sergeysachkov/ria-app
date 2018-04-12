@@ -1,5 +1,4 @@
 var AdminView = Backbone.View.extend({
-    collection: Cars,
     id: 'admin-view',
     events:{
         "click #modalButton": "createCar"
@@ -9,7 +8,7 @@ var AdminView = Backbone.View.extend({
     },
     render:function(){
         console.log("render admin view");
-        var template= _.template($('#admin_page').html(), this.collection.toJSON());
+        var template= _.template($('#admin_page').html());
         return this.$el.html(template);
     }
 });
